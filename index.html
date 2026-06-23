@@ -1433,7 +1433,12 @@ function generateQuestion(tables, multMax, mode) {
   const A        = tableArr[randInt(0, tableArr.length - 1)];
   const B        = randInt(1, multMax);
   const product  = A * B;
-  return mode === 'REVERSE'
+
+  // SURVIVAL randomly mixes standard and reverse questions (40% reverse)
+  const useReverse = mode === 'REVERSE'
+    || (mode === 'SURVIVAL' && Math.random() < 0.4);
+
+  return useReverse
     ? generateReverseQuestion(A, B, product, multMax, tableArr)
     : generateStandardQuestion(A, B, product, multMax);
 }
