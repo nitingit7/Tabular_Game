@@ -1235,8 +1235,17 @@ function soundLevelUp() {
   );
 }
 
+// Robust vibration — tries vendor prefixes, wraps in try/catch for silent failures.
+// Android Chrome supports navigator.vibrate natively; older browsers may use prefixed API.
 function vibrate(pattern) {
-  if (settings.vibration && navigator.vibrate) navigator.vibrate(pattern);
+  if (!settings.vibration) return;
+  try {
+    const vib = navigator.vibrate
+             || navigator.webkitVibrate
+             || navigator.mozVibrate
+             || navigator.msVibrate;
+    if (vib) vib.call(navigator, pattern);
+  } catch (e) { /* silently ignore if not supported */ }
 }
 
 /* ============================================================
@@ -1674,7 +1683,7 @@ function onTimeout() {
     btn.classList.add('disabled');
     btn.classList.add(i === ci ? 'reveal-green' : 'dimmed');
   });
-  soundWrong(); vibrate([50]);
+  soundWrong(); vibrate([120, 60, 120]); // timeout = two firm pulses
   recordAnswer(G.currentQ.A, G.currentQ.B, false);
   G.sessionWrong.add(G.currentQ.factKey);
   updateSessionMastery(G.currentQ.A, G.currentQ.B, false);
@@ -1793,7 +1802,7 @@ function onAnswer(idx) {
     showFloatPopup(pts, isMilestone || G.streak > 5);
     soundCorrect();
     if (isMilestone) soundCombo();
-    vibrate([30]);
+    vibrate([60]); // correct = single short tap
 
     recordAnswer(G.currentQ.A, G.currentQ.B, true);
     updateSessionMastery(G.currentQ.A, G.currentQ.B, true);
@@ -1813,7 +1822,7 @@ function onAnswer(idx) {
     });
     G.wrong++; G.streak = 0;
     soundWrong();
-    vibrate([50, 30, 50]);
+    vibrate([120, 60, 120, 60, 120]); // wrong = three sharp buzzes
     recordAnswer(G.currentQ.A, G.currentQ.B, false);
     G.sessionWrong.add(G.currentQ.factKey);
     updateSessionMastery(G.currentQ.A, G.currentQ.B, false);
@@ -2021,7 +2030,11 @@ document.getElementById('toggle-timer').addEventListener('change', e => {
   settings.showTimer = e.target.checked; saveLS('ta_settings', settings);
 });
 document.getElementById('toggle-vibration').addEventListener('change', e => {
-  settings.vibration = e.target.checked; saveLS('ta_settings', settings);
+  settings.vibration = e.target.checked;
+  saveLS('ta_settings', settings);
+  // Fire a test buzz immediately when the user enables vibration,
+  // so they can confirm the device actually supports it.
+  if (settings.vibration) vibrate([80, 40, 80]);
 });
 
 // Reset progress (double-confirm)
