@@ -15,6 +15,7 @@
       --card:        #141B2D;
       --card-border: rgba(255,255,255,0.08);
       --cyan:        #00E5FF;
+      --violet:      #C084FC;
       --amber:       #FFB800;
       --red:         #FF4757;
       --green:       #00E07A;
@@ -322,6 +323,19 @@
       font-size: 22px; min-height: 66px; letter-spacing: 0.12em;
       animation: pulseGlow 2s ease-in-out infinite;
     }
+
+    /* Squares button */
+    .btn-squares {
+      font-size: 18px; min-height: 66px; letter-spacing: 0.12em;
+      background: linear-gradient(135deg, #C084FC 0%, #7C3AED 100%);
+      color: #fff; font-weight: 800;
+      box-shadow: 0 0 22px rgba(192,132,252,0.35);
+    }
+    .btn-squares:hover { box-shadow: 0 0 36px rgba(192,132,252,0.6); }
+
+    /* Row that holds PLAY + SQUARES side-by-side */
+    .home-action-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    @media (max-width: 340px) { .home-action-row { grid-template-columns: 1fr; } }
 
     /* Heatmap */
     .heatmap-title {
@@ -761,10 +775,15 @@
         </div>
       </div>
 
-      <!-- PLAY button -->
-      <button class="btn btn-primary btn-play btn-full font-arcade" id="btn-play" aria-label="Play game">
-        ▶ PLAY
-      </button>
+      <!-- Action buttons: TABLE ARENA (PLAY) + SQUARE ARENA -->
+      <div class="home-action-row">
+        <button class="btn btn-primary btn-play font-arcade" id="btn-play" aria-label="Play Table Arena">
+          ▶ TABLES
+        </button>
+        <button class="btn btn-squares font-arcade" id="btn-squares" aria-label="Play Square Arena" onclick="window.location.href='square-arena.html'">
+          ◆ SQUARES
+        </button>
+      </div>
 
       <!-- Mastery Heatmap -->
       <div class="card">
