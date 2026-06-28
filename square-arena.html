@@ -358,6 +358,27 @@
     .q-q   { color: var(--violet); }
     .question-sub { font-size: 14px; color: var(--text-dim); margin-top: 10px; text-align: center; }
 
+    /* Radical (square root) notation for REVERSE mode */
+    .sqrt-wrap {
+      display: inline-flex; align-items: stretch;
+      vertical-align: middle;
+    }
+    .sqrt-sym {
+      color: var(--violet);
+      font-size: 1em;
+      line-height: 1;
+      /* Optical alignment of the radical symbol */
+      display: flex; align-items: flex-end;
+      padding-bottom: 2px;
+    }
+    .sqrt-radicand {
+      color: var(--text);
+      border-top: 4px solid var(--text);
+      padding: 2px 8px 0 4px;
+      display: inline-block;
+      line-height: 1;
+    }
+
     /* Float popup */
     .float-popup {
       position: absolute; font-size: 22px; font-weight: 800; color: var(--violet);
@@ -1341,12 +1362,15 @@ function renderQuestion() {
   const q=G.currentQ;
 
   if (q.mode==='REVERSE') {
-    // "729 = ?"
+    // "√729 = ?" with proper radical vinculum overline
     elQuestionTxt.innerHTML =
-      `<span class="q-a">${q.sq}</span>` +
+      `<span class="sqrt-wrap">` +
+        `<span class="sqrt-sym">√</span>` +
+        `<span class="sqrt-radicand">${q.sq}</span>` +
+      `</span>` +
       `<span class="q-eq"> = </span>` +
       `<span class="q-q">?</span>`;
-    elQuestionSub.textContent='Which square gives this?';
+    elQuestionSub.textContent = 'Find the square root';
   } else {
     // "27² = ?" — violet superscript ²
     elQuestionTxt.innerHTML =
